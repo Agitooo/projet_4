@@ -314,6 +314,9 @@ class Controller:
         tournament_list = []
         tournament_search = self.tournament_table.search(where("status") == STATUS_IN_PROGRESS)
 
+        if len(tournament_search) == 0:
+            return self.view.no_tournament()
+
         for tournament_find in tournament_search:
             tournament_list.append(tournament_find)
 
@@ -453,6 +456,7 @@ class Controller:
         else:
             return True
 
+
     def get_menu_choice(self):
         menu_choice = self.view.menu()
 
@@ -478,6 +482,10 @@ class Controller:
 
         elif menu_choice == "4":
             tournament = self.resume_tournament()
+
+            if not isinstance(tournament, Tournament):
+                # Si on ne récupère pas un tournoi
+                self.get_menu_choice()
             # On parcours les rounds
             for round_tournament in tournament.rounds:
                 flag_match_in_progress = True

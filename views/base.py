@@ -1,3 +1,6 @@
+from datetime import datetime
+
+
 class View:
     """Main controller."""
 
@@ -31,26 +34,30 @@ class View:
     def get_name_tournament(self):
         name_tournament = ""
         while not name_tournament:
-            name_tournament = input("tapez le nom du tournois : ")
+            name_tournament = input("Saisissez le nom du tournois : ")
         return name_tournament
 
     def get_location_tournament(self):
         location_tournament = ""
         while not location_tournament:
-            location_tournament = input("tapez le lieu du tournois : ")
+            location_tournament = input("Saisissez le lieu du tournois : ")
         return location_tournament
 
     def get_date_start_tournament(self):
         date_start_tournament = ""
+        date_start_tournament_valid = ""
         while not date_start_tournament:
-            date_start_tournament = input("tapez la date de debut du tournois : ")
-        return date_start_tournament
+            date_start_tournament = input("Saisissez la date de debut du tournois (jj/mm/aaaa) : ")
+            date_start_tournament_valid = self.verif_date(date_start_tournament)
+        return date_start_tournament_valid
 
     def get_date_end_tournament(self):
         date_end_tournament = ""
+        date_end_tournament_valid = ""
         while not date_end_tournament:
-            date_end_tournament = input("tapez la date de fin du tournois : ")
-        return date_end_tournament
+            date_end_tournament = input("Saisissez la date de fin du tournois (jj/mm/aaaa) : ")
+            date_end_tournament_valid = self.verif_date(date_end_tournament)
+        return date_end_tournament_valid
 
     def get_time_control_tournament(self, time_control):
         choice_time_control_tournament = 0
@@ -108,8 +115,16 @@ class View:
     def get_description(self):
         description = ""
         while not description:
-            description = input("tapez une description : ")
+            description = input("Saisissez une description : ")
         return description
+
+    def verif_date(self, date):
+        try:
+            nouvelle_date = datetime.strptime(date, '%d/%m/%Y')
+        except ValueError:
+            nouvelle_date = input("Saisissez une date valide au format (jj/mm/aaaa) : ")
+            self.verif_date(nouvelle_date)
+        return nouvelle_date.strftime('%d/%m/%Y')
 
     def create_player(self):
         """Create player."""
@@ -117,24 +132,27 @@ class View:
         firstname = ""
         lastname = ""
         birthdate = ""
+        birthdate_valid = ""
+        verif_date = False
         civility = ""
         rank = ""
 
         allowed_civility_choice = ["1", "2", "3"]
 
         while not firstname:
-            firstname = input("tapez le prénom du joueur : ")
+            firstname = input("Saisissez le prénom du joueur : ")
         while not lastname:
-            lastname = input("tapez le nom du joueur : ")
+            lastname = input("Saisissez le nom du joueur : ")
         while not birthdate:
-            birthdate = input("tapez date de naissance du joueur : ")
+            birthdate = input("Saisissez date de naissance du joueur (jj/mm/aaaa): ")
+            birthdate_valid = self.verif_date(birthdate)
         while not (civility in allowed_civility_choice):
-            civility = input("tapez la civilité du joueur (1 = femme, 2 = homme, 3 = autres) : ")
+            civility = input("Saisissez la civilité du joueur (1 = Femme, 2 = Homme, 3 = Autre) : ")
         while not rank:
-            rank = input("tapez le classement du joueur : ")
-
+            rank = input("Saisissez le classement du joueur : ")
+        print(birthdate)
         return {"firstname": firstname, "lastname": lastname,
-                "birthdate": birthdate, "civility": civility, "rank": rank}
+                "birthdate": birthdate_valid, "civility": civility, "rank": rank}
 
     def menu_search_player(self):
         choice_search_player = ""
@@ -184,8 +202,8 @@ class View:
             choice = input("Veuillez choisir un action :  \n "
                            "1 : Créer un nouveau joueur  \n "
                            "2 : Mettre à jour le classement d'un joueur  \n "
-                           "3 : Créer un tournois  \n "
-                           "4 : Reprendre un tournois en cours \n")
+                           "3 : Créer un tournoi  \n "
+                           "4 : Reprendre un tournoi en cour \n")
         return choice
 
     def menu_select_player(self, player):
@@ -226,3 +244,6 @@ class View:
 
     def all_match_done(self, tournament):
         return print(f"Tous les matchs du {tournament.name} sont terminés")
+
+    def no_tournament(self):
+        return print(f"Il n'y a pas de tournoi en cour")
