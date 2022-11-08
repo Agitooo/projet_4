@@ -456,6 +456,62 @@ class Controller:
         else:
             return True
 
+    def play_tournament(self, tournament):
+        if not isinstance(tournament, Tournament):
+            # Si on ne récupère pas un tournoi
+            self.get_menu_choice()
+        # On parcours les rounds
+        for round_tournament in tournament.rounds:
+            flag_match_in_progress = True
+            # Tant qu'on a le round en cours et des matchs en cours
+            while round_tournament.status == STATUS_IN_PROGRESS and flag_match_in_progress:
+                # Si on a des matchs
+                if len(round_tournament.matchs) > 0:
+                    # On récupère la liste des matchs en cours pour le round
+                    # afin d'avoir toujours une liste de match à jour
+                    matchs = self.get_match_by_round_id(round_tournament.round_id, STATUS_IN_PROGRESS)
+                    # Si on a plus de match en cours
+                    if len(matchs) == 0:
+                        # No match in progress => update round to done
+                        flag_match_in_progress = False
+                        self.update_round(round_tournament, STATUS_DONE)
+                        # Message end round
+                        self.view.round_done(round_tournament)
+                        # And create a new one if nb_round < 4
+                        if len(tournament.rounds) < 4:
+                            # Add new round to tournament
+                            new_round = self.init_round(tournament)
+                            # Message new round
+                            self.view.round_next(new_round)
+                            # On update le round actuel du tournoi avec le nouveau round
+                            self.update_actual_round_tournament(tournament, new_round)
+                            # Add new match to new round
+                            self.create_match(tournament, new_round)
+                        else:
+                            # Le tournoi est terminé
+                            # Message tournois done
+                            self.view.all_match_done(tournament)
+                            player_score = self.get_score_by_player(tournament)
+                            self.update_status_tournament(tournament, STATUS_DONE)
+                            self.view.get_result_tournament(player_score)
+                            self.get_menu_choice()
+                    else:
+                        # Des matchs sont toujours en cours
+                        choice_match = self.view.get_choice_match(matchs)
+                        winner = self.view.get_winner_match(choice_match)
+                        self.set_score(choice_match, winner)
+                else:
+                    flag_match_in_progress = False
+                    # On update le round en terminé
+                    self.update_round(round_tournament, STATUS_DONE)
+                    # On créé le nouveau round
+                    new_round = self.init_round(tournament)
+                    # Message new round
+                    self.view.round_next(new_round)
+                    # On update le round actuel du tournoi avec le nouveau round
+                    self.update_actual_round_tournament(tournament, new_round)
+                    # Créer les matchs pour le nouveau round
+                    self.create_match(tournament, new_round)
 
     def get_menu_choice(self):
         menu_choice = self.view.menu()
@@ -476,65 +532,9 @@ class Controller:
 
         elif menu_choice == "3":
             tournament = self.create_tournament()
-            for round_tournament in tournament.rounds:
-                for match in round_tournament.matchs:
-                    print(match.get_match_detail())
+            self.play_tournament(tournament)
 
         elif menu_choice == "4":
             tournament = self.resume_tournament()
+            self.play_tournament(tournament)
 
-            if not isinstance(tournament, Tournament):
-                # Si on ne récupère pas un tournoi
-                self.get_menu_choice()
-            # On parcours les rounds
-            for round_tournament in tournament.rounds:
-                flag_match_in_progress = True
-                # Tant qu'on a le round en cours et des matchs en cours
-                while round_tournament.status == STATUS_IN_PROGRESS and flag_match_in_progress:
-                    # Si on a des matchs
-                    if len(round_tournament.matchs) > 0:
-                        # On récupère la liste des matchs en cours pour le round
-                        # afin d'avoir toujours une liste de match à jour
-                        matchs = self.get_match_by_round_id(round_tournament.round_id, STATUS_IN_PROGRESS)
-                        # Si on a plus de match en cours
-                        if len(matchs) == 0:
-                            # No match in progress => update round to done
-                            flag_match_in_progress = False
-                            self.update_round(round_tournament, STATUS_DONE)
-                            # Message end round
-                            self.view.round_done(round_tournament)
-                            # And create a new one if nb_round < 4
-                            if len(tournament.rounds) < 4:
-                                # Add new round to tournament
-                                new_round = self.init_round(tournament)
-                                # Message new round
-                                self.view.round_next(new_round)
-                                # On update le round actuel du tournoi avec le nouveau round
-                                self.update_actual_round_tournament(tournament, new_round)
-                                # Add new match to new round
-                                self.create_match(tournament, new_round)
-                            else:
-                                # Le tournoi est terminé
-                                # Message tournois done
-                                self.view.all_match_done(tournament)
-                                player_score = self.get_score_by_player(tournament)
-                                self.update_status_tournament(tournament, STATUS_DONE)
-                                self.view.get_result_tournament(player_score)
-                                self.get_menu_choice()
-                        else:
-                            # Des matchs sont toujours en cours
-                            choice_match = self.view.get_choice_match(matchs)
-                            winner = self.view.get_winner_match(choice_match)
-                            self.set_score(choice_match, winner)
-                    else:
-                        flag_match_in_progress = False
-                        # On update le round en terminé
-                        self.update_round(round_tournament, STATUS_DONE)
-                        # On créé le nouveau round
-                        new_round = self.init_round(tournament)
-                        # Message new round
-                        self.view.round_next(new_round)
-                        # On update le round actuel du tournoi avec le nouveau round
-                        self.update_actual_round_tournament(tournament, new_round)
-                        # Créer les matchs pour le nouveau round
-                        self.create_match(tournament, new_round)
