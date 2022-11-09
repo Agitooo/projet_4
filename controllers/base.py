@@ -234,7 +234,7 @@ class Controller:
 
     def get_score_by_player(self, tournament):
         all_players = tournament.players
-        # score = []
+        player_sorted_by_score = []
         score = defaultdict(list)
         # On récupère les matchs terminés du tournoi
         matchs = self.get_match_by_tournament_id(tournament.tournament_id, STATUS_DONE)
@@ -244,7 +244,6 @@ class Controller:
                     if player.player_id == player_score.get("player_id"):
                         score[player.player_id].append(player_score.get("score"))
         # On trie les joueurs par score
-        player_sorted_by_score = []
         for id_player, score_player in sorted(score.items(), key=lambda x: sum(x[1]), reverse=True):
             player = self.search_player(SEARCH_PLAYER_BY_ID, id_player)
             player_with_score = {
@@ -252,7 +251,6 @@ class Controller:
                 "score": sum(score_player)
             }
             player_sorted_by_score.append(player_with_score)
-
         # joueurs triés par rank
         all_player_rank_sorted = sorted(player_sorted_by_score, key=lambda x: x['player'].rank, reverse=False)
         # joueurs triés par score
@@ -341,6 +339,44 @@ class Controller:
             # On récupère les matchs du round
             # matchs = self.get_match_by_round_id(round_list.round_id, STATUS_IN_PROGRESS)
             matchs = self.get_match_by_round_id(round_list.round_id, ALL_STATUS)
+
+            for matchs_list in matchs:
+                # On instancie les matchs dans chaque round
+                round_list.set_matchs(matchs_list)
+            tournament.set_rounds(round_list)
+
+        return tournament
+
+    def get_histo_tournament(self):
+        tournament_list = []
+        tournament_search = self.tournament_table.search(where("status") == STATUS_DONE)
+
+        if len(tournament_search) == 0:
+            return self.view.no_tournament_done()
+
+        for tournament_find in tournament_search:
+            tournament_list.append(tournament_find)
+
+        if len(tournament_list) > 1:
+            selected_tournament = self.view.menu_select_tournament(tournament_list)
+        else:
+            selected_tournament = tournament_list[0]
+
+        for player_id in selected_tournament["players"]:
+            player = self.search_player(SEARCH_PLAYER_BY_ID, player_id)
+            self.players.append(player)
+
+        selected_tournament["players"] = self.players
+
+        tournament = Tournament()
+        for k, v in selected_tournament.items():
+            setattr(tournament, k, v)
+
+        # On récupère les rounds du tournoi
+        rounds = self.get_round_by_tournament_id(tournament.tournament_id, STATUS_DONE)
+        for round_list in rounds:
+            # On récupère les matchs du round
+            matchs = self.get_match_by_round_id(round_list.round_id, STATUS_DONE)
 
             for matchs_list in matchs:
                 # On instancie les matchs dans chaque round
@@ -518,7 +554,7 @@ class Controller:
 
         if menu_choice == "1":
             player = self.create_player()
-            print(player.get_player_infos())
+            self.view.player_infos(player)
             self.get_menu_choice()
 
         elif menu_choice == "2":
@@ -538,3 +574,8 @@ class Controller:
             tournament = self.resume_tournament()
             self.play_tournament(tournament)
 
+        elif menu_choice == "5":
+            tournament = self.get_histo_tournament()
+            player_score = self.get_score_by_player(tournament)
+            self.view.get_result_tournament(player_score)
+            self.get_menu_choice()

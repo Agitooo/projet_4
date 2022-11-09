@@ -133,7 +133,6 @@ class View:
         lastname = ""
         birthdate = ""
         birthdate_valid = ""
-        verif_date = False
         civility = ""
         rank = ""
 
@@ -196,14 +195,15 @@ class View:
 
     def menu(self):
         choice = ""
-        allowed_menu_choice = ["1", "2", "3", "4"]
+        allowed_menu_choice = ["1", "2", "3", "4", "5"]
 
         while not (choice in allowed_menu_choice):
             choice = input("Veuillez choisir un action :  \n "
                            "1 : Créer un nouveau joueur  \n "
                            "2 : Mettre à jour le classement d'un joueur  \n "
                            "3 : Créer un tournoi  \n "
-                           "4 : Reprendre un tournoi en cour \n")
+                           "4 : Reprendre un tournoi en cour \n "
+                           "5 : Consulter l'historique des tournois \n")
         return choice
 
     def menu_select_player(self, player):
@@ -246,4 +246,10 @@ class View:
         return print(f"Tous les matchs du {tournament.name} sont terminés")
 
     def no_tournament(self):
-        return print(f"Il n'y a pas de tournoi en cour")
+        return print("Il n'y a pas de tournoi en cour")
+
+    def no_tournament_done(self):
+        return print("Il n'y a pas de tournoi a consulter")
+
+    def player_infos(self, player):
+        return print(player.get_player_infos())
