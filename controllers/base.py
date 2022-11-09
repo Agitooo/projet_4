@@ -22,9 +22,9 @@ class Controller:
         # self.tournament = tournament
         self.view = view
         self.players = []
-        self.player_table = self.db.table('players')
-        self.tournament_table = self.db.table('tournaments')
-        self.round_table = self.db.table('rounds')
+        self.player_table = self.db.table('players', cache_size=0)
+        self.tournament_table = self.db.table('tournaments', cache_size=0)
+        self.round_table = self.db.table('rounds', cache_size=0)
         self.match_table = self.db.table('matchs', cache_size=0)
 
         """export tournament data."""
@@ -233,16 +233,13 @@ class Controller:
         return all_round_by_tournament
 
     def get_score_by_player(self, tournament):
-        all_players = tournament.players
         player_sorted_by_score = []
         score = defaultdict(list)
         # On récupère les matchs terminés du tournoi
         matchs = self.get_match_by_tournament_id(tournament.tournament_id, STATUS_DONE)
         for match in matchs:
             for player_score in match.players_score:
-                for player in all_players:
-                    if player.player_id == player_score.get("player_id"):
-                        score[player.player_id].append(player_score.get("score"))
+                score[player_score.get("player_id")].append(player_score.get("score"))
         # On trie les joueurs par score
         for id_player, score_player in sorted(score.items(), key=lambda x: sum(x[1]), reverse=True):
             player = self.search_player(SEARCH_PLAYER_BY_ID, id_player)
@@ -255,7 +252,6 @@ class Controller:
         all_player_rank_sorted = sorted(player_sorted_by_score, key=lambda x: x['player'].rank, reverse=False)
         # joueurs triés par score
         all_player = sorted(all_player_rank_sorted, key=lambda x: x['score'], reverse=True)
-
         return all_player
 
     def get_match_by_round_id(self, round_id, match_status=ALL_STATUS):
@@ -525,7 +521,6 @@ class Controller:
                             self.create_match(tournament, new_round)
                         else:
                             # Le tournoi est terminé
-                            # Message tournois done
                             self.view.all_match_done(tournament)
                             player_score = self.get_score_by_player(tournament)
                             self.update_status_tournament(tournament, STATUS_DONE)

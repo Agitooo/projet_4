@@ -120,11 +120,10 @@ class View:
 
     def verif_date(self, date):
         try:
-            nouvelle_date = datetime.strptime(date, '%d/%m/%Y')
+            nouvelle_date = datetime.strptime(date, '%d/%m/%Y').strftime('%d/%m/%Y')
+            return nouvelle_date
         except ValueError:
-            nouvelle_date = input("Saisissez une date valide au format (jj/mm/aaaa) : ")
-            self.verif_date(nouvelle_date)
-        return nouvelle_date.strftime('%d/%m/%Y')
+            print("format de date invalide, 'jj/mm/aaaa' attendu")
 
     def create_player(self):
         """Create player."""
@@ -132,7 +131,6 @@ class View:
         firstname = ""
         lastname = ""
         birthdate = ""
-        birthdate_valid = ""
         civility = ""
         rank = ""
 
@@ -144,14 +142,14 @@ class View:
             lastname = input("Saisissez le nom du joueur : ")
         while not birthdate:
             birthdate = input("Saisissez date de naissance du joueur (jj/mm/aaaa): ")
-            birthdate_valid = self.verif_date(birthdate)
+            birthdate = self.verif_date(birthdate)
         while not (civility in allowed_civility_choice):
             civility = input("Saisissez la civilité du joueur (1 = Femme, 2 = Homme, 3 = Autre) : ")
         while not rank:
             rank = input("Saisissez le classement du joueur : ")
-        print(birthdate)
+
         return {"firstname": firstname, "lastname": lastname,
-                "birthdate": birthdate_valid, "civility": civility, "rank": rank}
+                "birthdate": birthdate, "civility": civility, "rank": rank}
 
     def menu_search_player(self):
         choice_search_player = ""
