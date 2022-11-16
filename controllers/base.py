@@ -386,6 +386,8 @@ class Controller:
         player = Player()
         for k, v in new_player.items():
             setattr(player, k, v)
+        # On ajoute la clé lastname_upper en base pour effectuer les recherches en majuscule
+        new_player["lastname_upper"] = new_player["lastname"].upper()
         # On insert le player dans la db
         self.insert_player(new_player)
         return player
@@ -404,7 +406,7 @@ class Controller:
 
         if choice_search_player == SEARCH_PLAYER_BY_NAME:
             search_name = self.view.menu_search_by_name()
-            player_search = self.player_table.search(where("lastname") == search_name)
+            player_search = self.player_table.search(where("lastname_upper") == search_name.upper())
 
         elif choice_search_player == SEARCH_PLAYER_BY_RANK:
             search_rank = self.view.menu_search_by_rank()
