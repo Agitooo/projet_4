@@ -495,7 +495,6 @@ class Controller:
         # On parcours les rounds
         for round_tournament in tournament.rounds:
             flag_match_in_progress = True
-            # Tant qu'on a le round en cours et des matchs en cours
             while round_tournament.status == STATUS_IN_PROGRESS and flag_match_in_progress:
                 # Si on a des matchs
                 if len(round_tournament.matchs) > 0:
@@ -507,20 +506,16 @@ class Controller:
                         # No match in progress => update round to done
                         flag_match_in_progress = False
                         self.update_round(round_tournament, STATUS_DONE)
-                        # Message end round
                         self.view.round_done(round_tournament)
                         # And create a new one if nb_round < 4
                         if len(tournament.rounds) < 4:
                             # Add new round to tournament
                             new_round = self.init_round(tournament)
-                            # Message new round
                             self.view.round_next(new_round)
-                            # On update le round actuel du tournoi avec le nouveau round
                             self.update_actual_round_tournament(tournament, new_round)
-                            # Add new match to new round
                             self.create_match(tournament, new_round)
                         else:
-                            # Le tournoi est terminé
+                            # Tournoi terminé
                             self.view.all_match_done(tournament)
                             player_score = self.get_score_by_player(tournament)
                             self.update_status_tournament(tournament, STATUS_DONE)
@@ -533,15 +528,10 @@ class Controller:
                         self.set_score(choice_match, winner)
                 else:
                     flag_match_in_progress = False
-                    # On update le round en terminé
                     self.update_round(round_tournament, STATUS_DONE)
-                    # On créé le nouveau round
                     new_round = self.init_round(tournament)
-                    # Message new round
                     self.view.round_next(new_round)
-                    # On update le round actuel du tournoi avec le nouveau round
                     self.update_actual_round_tournament(tournament, new_round)
-                    # Créer les matchs pour le nouveau round
                     self.create_match(tournament, new_round)
 
     def get_menu_choice(self):

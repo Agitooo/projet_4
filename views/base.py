@@ -200,7 +200,7 @@ class View:
                            "1 : Créer un nouveau joueur  \n "
                            "2 : Mettre à jour le classement d'un joueur  \n "
                            "3 : Créer un tournoi  \n "
-                           "4 : Reprendre un tournoi en cour \n "
+                           "4 : Reprendre un tournoi en cours \n "
                            "5 : Consulter l'historique des tournois \n")
         return choice
 
@@ -244,7 +244,7 @@ class View:
         return print(f"Tous les matchs du {tournament.name} sont terminés")
 
     def no_tournament(self):
-        return print("Il n'y a pas de tournoi en cour")
+        return print("Il n'y a pas de tournoi en cours")
 
     def no_tournament_done(self):
         return print("Il n'y a pas de tournoi a consulter")
