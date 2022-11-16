@@ -559,3 +559,6 @@ class Controller:
             player_score = self.get_score_by_player(tournament)
             self.view.get_result_tournament(player_score)
             self.get_menu_choice()
+
+        elif menu_choice == "0":
+            exit()

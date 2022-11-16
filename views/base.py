@@ -174,7 +174,7 @@ class View:
 
     def menu(self):
         choice = ""
-        allowed_menu_choice = ["1", "2", "3", "4", "5"]
+        allowed_menu_choice = ["1", "2", "3", "4", "5", "0"]
 
         while not (choice in allowed_menu_choice):
             choice = input("Veuillez choisir un action :  \n "
@@ -182,7 +182,8 @@ class View:
                            "2 : Mettre à jour le classement d'un joueur  \n "
                            "3 : Créer un tournoi  \n "
                            "4 : Reprendre un tournoi en cours \n "
-                           "5 : Consulter l'historique des tournois \n")
+                           "5 : Consulter l'historique des tournois \n "
+                           "0 : Quitter \n ")
         return choice
 
     def menu_select_player(self, player):
@@ -195,7 +196,8 @@ class View:
             list_player += f"{index + 1} : {player_choice.get_player_infos()} \n"
 
         while int(player_selected) not in allowed_select_player_choice:
-            player_selected = input(f"Plusieurs joueurs correspondent a votre recherche, veuillez en selection un : \n"
+            player_selected = input(f"Plusieurs joueurs correspondent a votre recherche, "
+                                    f"veuillez en selection un : \n"
                                     f"{list_player} \n")
 
         return player[int(player_selected) - 1]

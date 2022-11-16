@@ -60,8 +60,9 @@ Il y a plusieurs possibilités :
      3 : Créer un tournoi
      4 : Reprendre un tournoi en cour
      5 : Consulter l'historique des tournois
+     0 : Quitter
 
-Il suffit d'écrire 1, 2, 3, 4 ou 5
+Il suffit d'écrire 1, 2, 3, 4, 5 ou 0
 
 Le choix 1 permet de créer un joueur, en saisissant les différentes informations demandées : nom, 
 prénom, date de naissance, civilité, classement.
@@ -74,3 +75,5 @@ apres avoir sélectionné / créé les différents joueurs participants au tourn
 Le choix 4 permet de reprendre le cours d'un tournoi qui n'est pas terminé
 
 Le choix 5 permet de consulter les scores des tournois qui sont terminés
+
+Le choix 0 permet de quitter le programme
