@@ -159,22 +159,18 @@ class Controller:
         date_start_tournament = self.view.get_date_start_tournament()
         date_end_tournament = self.view.get_date_end_tournament()
         number_round = NB_ROUND_TOURNAMENT
-        # Création, donc round numéro 1
         actual_round = 1
-        # On demande d'ajouter des joueurs tant qu'il n'y en a pas 8
         player = []
         list_player_db = []
         while len(self.players) < NB_PLAYER_TOURNAMENT_MAX:
             choice_add_player = self.view.get_choice_add_player_in_tournament()
             if choice_add_player == "1":
-                # On crée un joueur
                 player = self.create_player()
             elif choice_add_player == "2":
-                # Get the choice how to search (by name or by rank)
                 choice_search_player = self.view.menu_search_player()
-                # Get the player selected
                 player = self.search_player(choice_search_player)
-
+            elif choice_add_player == "0":
+                self.get_menu_choice()
             self.players.append(player)
             list_player_db.append(player.player_id)
 
@@ -194,17 +190,13 @@ class Controller:
             "description": description,
             "status": STATUS_IN_PROGRESS
         }
-
         tournament_array_for_db = tournament_array_for_obj.copy()
-        # Pour la base de données, on ne stocke que l'id des joueurs et pas l'objet joueur entier
         tournament_array_for_db["players"] = list_player_db
-
         tournament = Tournament()
         for k, v in tournament_array_for_obj.items():
             setattr(tournament, k, v)
 
         self.tournament_table.insert(tournament_array_for_db)
-
         first_round = self.init_round(tournament)
         tournament.set_rounds(first_round)
         matchs = self.init_match(first_round, tournament)
@@ -521,7 +513,11 @@ class Controller:
                     else:
                         # Des matchs sont toujours en cours
                         choice_match = self.view.get_choice_match(matchs)
+                        if choice_match == 0:
+                            self.get_menu_choice()
                         winner = self.view.get_winner_match(choice_match)
+                        if winner == 0:
+                            self.get_menu_choice()
                         self.set_score(choice_match, winner)
                 else:
                     flag_match_in_progress = False

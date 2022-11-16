@@ -5,11 +5,12 @@ class View:
 
     def get_choice_add_player_in_tournament(self):
         choice_add_player = ""
-        allowed_menu_choice_add_player = ["1", "2"]
+        allowed_menu_choice_add_player = ["1", "2", "0"]
         while choice_add_player not in allowed_menu_choice_add_player:
             choice_add_player = input("Ajouter un joueur au tournois :  \n "
                                       "1 : Créer un nouveau joueur \n "
-                                      "2 : Rechercher une joueur \n ")
+                                      "2 : Rechercher une joueur \n "
+                                      "0 : Revenir au menu principal \n ")
         return choice_add_player
 
     def get_name_tournament(self):
@@ -54,42 +55,48 @@ class View:
         return int(choice_time_control_tournament)
 
     def get_choice_match(self, matchs):
-        choice_match = 0
+        # 99, car init impossible à 0 et 4 matchs max
+        choice_match = 99
         list_match = ""
-        allowed_choice_match = range(1, len(matchs) + 1)
+        allowed_choice_match = range(0, len(matchs) + 1)
 
         for index, match_choice in enumerate(matchs):
-            list_match += f"{index + 1} : {match_choice.get_versus()} \n"
+            list_match += f" {index + 1} : {match_choice.get_versus()} \n"
+        list_match += f" 0 : Revenir au menu principal \n "
 
         while int(choice_match) not in allowed_choice_match:
             choice_match = input(f"Choisissez le match pour saisir le score : \n"
                                  f"{list_match}")
-        return matchs[int(choice_match) - 1]
+        if choice_match == "0":
+            return 0
+        else:
+            return matchs[int(choice_match) - 1]
 
     def get_winner_match(self, match):
-        choice_winner = 0
+        choice_winner = 99
         list_resultat = ""
-        # On fait +2, car il y a le joueur 1, le joueur 2 ou le match nul
-        allowed_choice_winner = range(1, len(match.players) + 2)
-
+        # On fait +3, car il y a le joueur 1, le joueur 2, le match nul ou quitter
+        allowed_choice_winner = range(0, len(match.players) + 3)
         dict_resultat = {index + 1: player for index, player in enumerate(match.players)}
-        dict_resultat = {3: "Match nul entre les 2 joueurs", **dict_resultat}
-
         sorted_keys = sorted(dict_resultat.keys())
+
         for key in sorted_keys:
-            if key != 3:
-                list_resultat += f"{key}: {dict_resultat[key].get_player_name()} \n"
-            else:
-                list_resultat += f"{key}: {dict_resultat[key]} \n"
+            list_resultat += f" {key}: {dict_resultat[key].get_player_name()} \n"
+        list_resultat += " 3: Match nul entre les 2 joueurs \n"
+        list_resultat += " 0: Revenir au menu principal\n "
 
         while int(choice_winner) not in allowed_choice_winner:
             choice_winner = input(f"Choisissez le vainqueur : \n"
                                   f"{list_resultat}")
         winner = []
-
         if choice_winner == "3":
+            # Match nul
             winner = match.players
+        elif choice_winner == "0":
+            # Revenir au menu principal
+            winner = 0
         else:
+            # 1 Gagnant
             winner.append(dict_resultat[int(choice_winner)])
         return winner
 
@@ -101,7 +108,7 @@ class View:
 
     def verif_date(self, date):
         try:
-            nouvelle_date = datetime.strptime(date, '%d/%m/%Y').strftime('%d/%m/%Y')
+            nouvelle_date = datetime.strptime(date, "%d/%m/%Y").strftime("%d/%m/%Y")
             return nouvelle_date
         except ValueError:
             print("format de date invalide, 'jj/mm/aaaa' attendu")
@@ -134,11 +141,12 @@ class View:
 
     def menu_search_player(self):
         choice_search_player = ""
-        allowed_menu_choice_search_player = ["1", "2"]
+        allowed_menu_choice_search_player = ["1", "2", "0"]
         while not (choice_search_player in allowed_menu_choice_search_player):
             choice_search_player = input("Rechercher un joueur par son :  \n "
                                          "1 : Nom \n "
-                                         "2 : Classement \n ")
+                                         "2 : Classement \n "
+                                         "0 : Revenir au menu principal \n ")
         return choice_search_player
 
     def menu_search_by_name(self):

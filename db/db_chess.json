@@ -175,7 +175,7 @@
       ],
       "time_control": "bullet",
       "description": "description tournoi 3",
-      "status": "2"
+      "status": "1"
     }
   },
   "rounds": {
@@ -282,10 +282,10 @@
       "tournament_id": "4a3e80ca-5620-4db0-8692-da086b93fedb",
       "round_id": "64938653-f8b4-49b9-a9a7-7f25d829d6a8",
       "round_number": 4,
-      "status": "2",
+      "status": "1",
       "name": "Round 4",
       "datetime_start": "08/11/2022 18:13:47",
-      "datetime_end": "08/11/2022 18:14:02"
+      "datetime_end": "16/11/2022 14:13:11"
     }
   },
   "matchs": {
@@ -1233,21 +1233,12 @@
       "match_id": "ec05dc07-4cfc-4cd8-b576-79b4284d7627",
       "round_id": "64938653-f8b4-49b9-a9a7-7f25d829d6a8",
       "tournament_id": "4a3e80ca-5620-4db0-8692-da086b93fedb",
-      "status": "2",
+      "status": "1",
       "players": [
         "a6d442b2-18be-44ba-bc9f-298ade9815dd",
         "a6d442b2-88be-44ba-bc9f-298ade2815dd"
       ],
-      "players_score": [
-        {
-          "player_id": "a6d442b2-18be-44ba-bc9f-298ade9815dd",
-          "score": 1.0
-        },
-        {
-          "player_id": "a6d442b2-88be-44ba-bc9f-298ade2815dd",
-          "score": 0.0
-        }
-      ]
+      "players_score": []
     }
   }
 }
