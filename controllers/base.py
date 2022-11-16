@@ -12,22 +12,17 @@ SEARCH_PLAYER_BY_ID = "3"
 
 
 class Controller:
-    """Main controller."""
 
     db = TinyDB("./db/db_chess.json")
 
-    # def __init__(self, tournament: Tournament, view):
     def __init__(self, view):
         """init."""
-        # self.tournament = tournament
         self.view = view
         self.players = []
         self.player_table = self.db.table('players', cache_size=0)
         self.tournament_table = self.db.table('tournaments', cache_size=0)
         self.round_table = self.db.table('rounds', cache_size=0)
         self.match_table = self.db.table('matchs', cache_size=0)
-
-        """export tournament data."""
 
     def insert_player(self, player):
         return self.player_table.insert(player)

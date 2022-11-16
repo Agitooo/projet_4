@@ -2,25 +2,6 @@ from datetime import datetime
 
 
 class View:
-    """Main controller."""
-
-    def create_tournament(self):
-        """creer tournois"""
-
-    def add_player(self):
-        """ajouter joueur"""
-
-    def generate_round(self):
-        """generer round"""
-
-    def get_result_match(self):
-        """resultat match"""
-
-    def get_result_round(self):
-        """resultat round"""
-
-    def get_report(self):
-        """sortir un rapport"""
 
     def get_choice_add_player_in_tournament(self):
         choice_add_player = ""
