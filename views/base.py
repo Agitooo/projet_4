@@ -27,19 +27,17 @@ class View:
 
     def get_date_start_tournament(self):
         date_start_tournament = ""
-        date_start_tournament_valid = ""
         while not date_start_tournament:
             date_start_tournament = input("Saisissez la date de debut du tournois (jj/mm/aaaa) : ")
-            date_start_tournament_valid = self.verif_date(date_start_tournament)
-        return date_start_tournament_valid
+            date_start_tournament = self.verif_date(date_start_tournament)
+        return date_start_tournament
 
     def get_date_end_tournament(self):
         date_end_tournament = ""
-        date_end_tournament_valid = ""
         while not date_end_tournament:
             date_end_tournament = input("Saisissez la date de fin du tournois (jj/mm/aaaa) : ")
-            date_end_tournament_valid = self.verif_date(date_end_tournament)
-        return date_end_tournament_valid
+            date_end_tournament = self.verif_date(date_end_tournament)
+        return date_end_tournament
 
     def get_time_control_tournament(self, time_control):
         choice_time_control_tournament = 0
