@@ -81,9 +81,9 @@ class View:
         sorted_keys = sorted(dict_resultat.keys())
 
         for key in sorted_keys:
-            list_resultat += f" {key}: {dict_resultat[key].get_player_name()} \n"
-        list_resultat += " 3: Match nul entre les 2 joueurs \n"
-        list_resultat += " 0: Revenir au menu principal\n "
+            list_resultat += f" {key} : {dict_resultat[key].get_player_name()} \n"
+        list_resultat += " 3 : Match nul entre les 2 joueurs \n"
+        list_resultat += " 0 : Revenir au menu principal\n "
 
         while int(choice_winner) not in allowed_choice_winner:
             choice_winner = input(f"Choisissez le vainqueur : \n"
