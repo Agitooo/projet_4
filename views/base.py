@@ -62,7 +62,7 @@ class View:
 
         for index, match_choice in enumerate(matchs):
             list_match += f" {index + 1} : {match_choice.get_versus()} \n"
-        list_match += f" 0 : Revenir au menu principal \n "
+        list_match += " 0 : Revenir au menu principal \n "
 
         while int(choice_match) not in allowed_choice_match:
             choice_match = input(f"Choisissez le match pour saisir le score : \n"

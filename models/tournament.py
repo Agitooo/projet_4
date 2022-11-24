@@ -26,7 +26,6 @@ class Tournament:
         self.actual_round = kwargs.get("actual_round")
         self.players: List[Player] = kwargs.get("players")
         self.time_control = kwargs.get("time_control")
-        # self.time_control_type = TIME_CONTROL[self.time_control]
         self.description = kwargs.get("description")
         self.status = kwargs.get("status")
         self.rounds: List[Round] = []
@@ -82,10 +81,12 @@ class Match:
         return str(self)
 
     def get_match_detail(self):
-        return f"Le match va opposer {self.players[0].get_player_name()} à {self.players[1].get_player_name()}."
+        return f"Le match va opposer {self.players[0].get_player_name()} (rang : {self.players[0].rank}) " \
+               f"à {self.players[1].get_player_name()} (rang : {self.players[1].rank})."
 
     def get_versus(self):
-        return f"{self.players[0].get_player_name()} contre {self.players[1].get_player_name()}."
+        return f"{self.players[0].get_player_name()} (rang : {self.players[0].rank}) " \
+               f"contre {self.players[1].get_player_name()} (rang : {self.players[1].rank})."
 
     def set_players_score(self, players_score):
         self.players_score = players_score
