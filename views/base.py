@@ -188,8 +188,48 @@ class View:
                            "2 : Mettre à jour le classement d'un joueur  \n "
                            "3 : Créer un tournoi  \n "
                            "4 : Reprendre un tournoi en cours \n "
-                           "5 : Consulter l'historique des tournois \n "
+                           "5 : Consulter les rapports \n "
                            "0 : Quitter \n ")
+        return choice
+
+    def menu_histo(self):
+        choice = ""
+        allowed_menu_histo_choice = ["1", "2", "0"]
+
+        while not (choice in allowed_menu_histo_choice):
+            choice = input("Sélectionnez le type de rapport :  \n "
+                           "1 : Liste des joueurs  \n "
+                           "2 : Liste des tournois  \n "
+                           "0 : Quitter \n ")
+        return choice
+
+    def list_all_player(self, all_player):
+        recap = "Voici la liste des joueurs : \n"
+        for index, player in enumerate(all_player):
+            recap += f"{player.get_player_infos()} \n"
+        return print(recap)
+
+    def list_sort_choice(self):
+        choice = ""
+        allowed_sort_choice = ["1", "2", "0"]
+
+        while not (choice in allowed_sort_choice):
+            choice = input("Sélectionnez filtre à appliquer :  \n "
+                           "1 : Ordre alphabétique  \n "
+                           "2 : Classement  \n "
+                           "0 : Revenir au menu principal \n ")
+        return choice
+
+    def get_menu_histo_tournament(self):
+        choice = ""
+        allowed_choice = ["1", "2", "3", "0"]
+
+        while not (choice in allowed_choice):
+            choice = input("Sélectionnez le rapport du tournoi vous souhaitez consulter :  \n "
+                           "1 : Liste des joueurs  \n "
+                           "2 : Liste des rounds  \n "
+                           "3 : Liste des matchs  \n "
+                           "0 : Revenir au menu principal \n ")
         return choice
 
     def menu_select_player(self, player):
@@ -208,18 +248,42 @@ class View:
 
         return player[int(player_selected) - 1]
 
+    def list_player_tournament(self, tournament):
+        list_player = ""
+        for index, player in enumerate(tournament.players):
+            list_player += f" - {player.get_player_infos()} \n"
+        print(list_player)
+
+    def list_round_tournament(self, tournament):
+        list_round = ""
+        for index, tour in enumerate(tournament.rounds):
+            list_round += f" - {tour.get_round_detail()} \n"
+        print(list_round)
+
+    def list_match_tournament(self, tournament):
+        list_match = ""
+        for index, tour in enumerate(tournament.rounds):
+            list_match += f" - {tour.get_round_detail()} \n"
+            for index_match, match in enumerate(tour.matchs):
+                list_match += f"   - {match.get_match_detail()} \n"
+        print(list_match)
+
     def menu_select_tournament(self, tournament):
         tournament_selected = 0
         list_tournament = ""
         # le range fait max -1... donc pour le créer dynamiquement faut faire +1... logique -_-
         allowed_select_tournament_choice = range(1, len(tournament) + 1)
         for index, tournament_choice in enumerate(tournament):
-            list_tournament += f"{index + 1} : tournois {tournament_choice['name']} " \
-                               f"à {tournament_choice['location']} le {tournament_choice['date_start']} \n"
+            if tournament_choice['status'] == "2":
+                status = "terminé"
+            else:
+                status = "en cours"
+            list_tournament += f" {index + 1} : Tournoi \"{tournament_choice['name']}\" " \
+                               f"à \"{tournament_choice['location']}\" le {tournament_choice['date_start']} " \
+                               f"({status}) \n"
 
         while int(tournament_selected) not in allowed_select_tournament_choice:
-            tournament_selected = input(f"Plusieurs tournois correspondent a votre recherche, "
-                                        f"veuillez en selection un : \n{list_tournament}")
+            tournament_selected = input(f"Veuillez sélectionner un tournoi : \n{list_tournament}")
 
         return tournament[int(tournament_selected) - 1]
 

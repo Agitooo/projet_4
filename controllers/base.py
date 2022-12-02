@@ -9,6 +9,7 @@ import uuid
 SEARCH_PLAYER_BY_NAME = "1"
 SEARCH_PLAYER_BY_RANK = "2"
 SEARCH_PLAYER_BY_ID = "3"
+SEARCH_PLAYER_ALL = "4"
 
 
 class Controller:
@@ -50,7 +51,7 @@ class Controller:
     def init_match(self, first_round, tournament):
 
         # joueurs triés par rank
-        player_sorted_by_rank = sorted(tournament.players, key=lambda x: x.rank)
+        player_sorted_by_rank = sorted(tournament.players, key=lambda x: int(x.rank))
         # On fait 2 tableaux de joueurs en prenant
         # la moitié des mieux classée et l'autre moitié des moins bien classée
         nb_player_per_group = int(len(player_sorted_by_rank) / 2)
@@ -236,7 +237,7 @@ class Controller:
             }
             player_sorted_by_score.append(player_with_score)
         # joueurs triés par rank
-        all_player_rank_sorted = sorted(player_sorted_by_score, key=lambda x: x['player'].rank, reverse=False)
+        all_player_rank_sorted = sorted(player_sorted_by_score, key=lambda x: int(x['player'].rank), reverse=False)
         # joueurs triés par score
         all_player = sorted(all_player_rank_sorted, key=lambda x: x['score'], reverse=True)
         return all_player
@@ -332,7 +333,7 @@ class Controller:
 
     def get_histo_tournament(self):
         tournament_list = []
-        tournament_search = self.tournament_table.search(where("status") == STATUS_DONE)
+        tournament_search = self.tournament_table.all()
 
         if len(tournament_search) == 0:
             return self.view.no_tournament_done()
@@ -356,10 +357,10 @@ class Controller:
             setattr(tournament, k, v)
 
         # On récupère les rounds du tournoi
-        rounds = self.get_round_by_tournament_id(tournament.tournament_id, STATUS_DONE)
+        rounds = self.get_round_by_tournament_id(tournament.tournament_id, ALL_STATUS)
         for round_list in rounds:
             # On récupère les matchs du round
-            matchs = self.get_match_by_round_id(round_list.round_id, STATUS_DONE)
+            matchs = self.get_match_by_round_id(round_list.round_id, ALL_STATUS)
 
             for matchs_list in matchs:
                 # On instancie les matchs dans chaque round
@@ -407,11 +408,17 @@ class Controller:
         elif choice_search_player == SEARCH_PLAYER_BY_ID:
             player_search = self.player_table.search(where("player_id") == player_id)
 
+        elif choice_search_player == SEARCH_PLAYER_ALL:
+            player_search = self.player_table.all()
+
         for player_find in player_search:
             player = Player()
             for k, v in player_find.items():
                 setattr(player, k, v)
             players_list.append(player)
+
+        if choice_search_player == SEARCH_PLAYER_ALL:
+            return players_list
 
         if len(players_list) > 1:
             selected_player = self.view.menu_select_player(players_list)
@@ -476,6 +483,39 @@ class Controller:
             return False
         else:
             return True
+
+    def get_all_player(self, sort_choice="1"):
+        all_player = self.search_player(SEARCH_PLAYER_ALL)
+        if sort_choice == "1":
+            all_player = sorted(all_player, key=lambda x: x.lastname, reverse=False)
+        elif sort_choice == "2":
+            all_player = sorted(all_player, key=lambda x: int(x.rank), reverse=False)
+        list_all_player = self.view.list_all_player(all_player)
+        return list_all_player
+
+    def get_rapport_tournament(self, tournament):
+        choice_histo_tournament = self.view.get_menu_histo_tournament()
+        if choice_histo_tournament == "1":
+            self.view.list_player_tournament(tournament)
+            self.get_rapport_tournament(tournament)
+        elif choice_histo_tournament == "2":
+            self.view.list_round_tournament(tournament)
+            self.get_rapport_tournament(tournament)
+        elif choice_histo_tournament == "3":
+            self.view.list_match_tournament(tournament)
+            self.get_rapport_tournament(tournament)
+
+    def get_histo(self, choice_menu_histo):
+        if choice_menu_histo == "1":
+            all_players = self.get_all_player()
+            sort_choice = "1"
+            while sort_choice != "0":
+                sort_choice = self.view.list_sort_choice()
+                all_players = self.get_all_player(sort_choice)
+            self.get_menu_choice()
+        if choice_menu_histo == "2":
+            tournament = self.get_histo_tournament()
+            self.get_rapport_tournament(tournament)
 
     def play_tournament(self, tournament):
         if not isinstance(tournament, Tournament):
@@ -553,9 +593,8 @@ class Controller:
             self.play_tournament(tournament)
 
         elif menu_choice == "5":
-            tournament = self.get_histo_tournament()
-            player_score = self.get_score_by_player(tournament)
-            self.view.get_result_tournament(player_score)
+            choice_menu_histo = self.view.menu_histo()
+            self.get_histo(choice_menu_histo)
             self.get_menu_choice()
 
         elif menu_choice == "0":
